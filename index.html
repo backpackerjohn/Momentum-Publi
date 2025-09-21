@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Momentum AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        /* Neuroflow Style Guide (v2) Implementation */
+
+        /* 2. Colors */
+        /* Primary Palette */
+        --color-terracotta-red-hsl: 13 55% 51%; /* #C65A3E */
+        --color-sage-green-hsl: 80 10% 69%; /* #A9B9A3 */
+        --color-mustard-yellow-hsl: 40 63% 58%; /* #D9A74F */
+        --color-deep-burnt-red-hsl: 10 43% 34%; /* #7B3C31 */
+        
+        /* Neutrals */
+        --color-bg-beige-hsl: 40 33% 95%; /* #F6F3EE */
+        --color-light-sand-hsl: 40 17% 91%; /* #EDEAE4 */
+        --color-warm-gray-hsl: 40 11% 82%; /* #D6D2CC */
+        --color-dark-gray-hsl: 30 1% 22%; /* #3A3938 */
+        --color-black-hsl: 30 3% 10%; /* #1C1B1A */
+        --color-white-hsl: 0 0% 100%; /* #FFFFFF */
+        
+        /* Semantic Tokens (from guide) */
+        --color-bg: hsl(var(--color-bg-beige-hsl));
+        --color-surface: hsl(var(--color-white-hsl));
+        --color-surface-card: hsl(var(--color-light-sand-hsl));
+        --color-surface-sunken: hsl(var(--color-bg-beige-hsl)); /* A slightly darker beige for sunken elements */
+
+        --color-text-primary: hsl(var(--color-black-hsl)); /* on-surface */
+        --color-text-secondary: hsl(var(--color-dark-gray-hsl));
+        --color-text-subtle: hsl(var(--color-warm-gray-hsl));
+
+        --color-border: rgba(0,0,0,0.08);
+        --color-border-hover: rgba(0,0,0,0.12);
+
+        --color-primary-accent: hsl(var(--color-terracotta-red-hsl));
+        --color-primary-accent-hover: hsl(13, 55%, 56%); /* +5% lightness */
+        --color-primary-accent-active: hsl(13, 55%, 48%); /* -3% lightness for active */
+        --color-primary-accent-text: hsl(var(--color-white-hsl)); /* on-primary */
+
+        --color-secondary-accent: hsl(var(--color-sage-green-hsl));
+        --color-secondary-accent-text: hsl(var(--color-dark-gray-hsl)); /* on-secondary */
+
+        --color-warning: hsl(var(--color-mustard-yellow-hsl));
+        --color-danger: hsl(var(--color-deep-burnt-red-hsl));
+        --color-danger-hover: hsl(10, 43%, 39%);
+        --color-danger-text: hsl(var(--color-white-hsl));
+
+        --color-success: hsl(var(--color-sage-green-hsl));
+        
+        /* 4. Layout & Spacing */
+        /* Corner Radius */
+        --border-radius-sm: 8px;
+        --border-radius-md: 12px;
+        --border-radius-lg: 16px;
+        --border-radius-xl: 20px;
+        --border-radius-2xl: 24px;
+        --border-radius-full: 9999px;
+
+        /* Shadows (Warm Minimalism) */
+        --shadow-sm: 0 2px 4px rgba(42, 35, 25, 0.05), 0 1px 2px rgba(42, 35, 25, 0.08);
+        --shadow-md: 0 4px 12px rgba(42, 35, 25, 0.08), 0 2px 4px rgba(42, 35, 25, 0.06);
+        --shadow-lg: 0 10px 24px rgba(42, 35, 25, 0.09), 0 5px 10px rgba(42, 35, 25, 0.07);
+        --shadow-xl: 0 20px 40px rgba(42, 35, 25, 0.1), 0 8px 15px rgba(42, 35, 25, 0.08);
+        --shadow-inset: inset 0 2px 4px 0 rgba(42, 35, 25, 0.05);
+
+        /* 8. Interaction & Motion */
+        --base-animation-speed: 0.2s; /* 200ms */
+        --animation-speed: var(--base-animation-speed);
+        --font-family: 'Nunito Sans', 'Inter', sans-serif;
+      }
+
+      body {
+        font-family: var(--font-family);
+        background-color: var(--color-bg);
+        color: var(--color-text-primary);
+        transition: background-color var(--animation-speed) ease-in-out, color var(--animation-speed) ease-in-out;
+      }
+
+      * {
+        transition: background-color var(--animation-speed) ease-in-out, color var(--animation-speed) ease-in-out, border-color var(--animation-speed) ease-in-out, box-shadow var(--animation-speed) ease-in-out, transform var(--animation-speed) ease-in-out;
+      }
+
+      ::placeholder {
+        color: var(--color-text-subtle);
+        opacity: 1; /* Firefox */
+      }
+
+      /* Accessibility & Interaction Enhancements */
+      :focus-visible {
+        outline: 2px solid var(--color-primary-accent);
+        outline-offset: 2px;
+        border-radius: var(--border-radius-md);
+      }
+      
+      button:focus-visible, a:focus-visible {
+         border-radius: var(--border-radius-full);
+      }
+
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      
+      .animate-fade-in {
+        animation: fadeIn var(--animation-speed) ease-out;
+      }
+
+      /* --- Mobile Preview Styles --- */
+      .app-root.preview-mobile {
+          padding: 2rem;
+          background-color: hsl(40, 11%, 82%); /* Warm Gray */
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;
+          min-height: 100vh;
+          height: 100%;
+          width: 100%;
+          overflow: auto;
+      }
+      
+      .app-root.preview-mobile .app-content {
+          width: 375px;
+          height: 667px;
+          border: 12px solid #1c1b1a;
+          border-radius: 40px;
+          box-shadow: 0 20px 40px -10px rgba(0,0,0,0.3);
+          overflow: hidden;
+          background-color: var(--color-bg);
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+      }
+      
+      .app-root.preview-desktop .app-content {
+          min-height: 100vh;
+      }
+
+      /* Make main content scrollable within the frame */
+      .preview-mobile .app-content > div:first-of-type {
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .preview-mobile .app-content main {
+          flex-grow: 1;
+          overflow-y: auto;
+          scrollbar-width: thin;
+          scrollbar-color: var(--color-border) transparent;
+          order: 1;
+      }
+      .preview-mobile .app-content main::-webkit-scrollbar { width: 6px; }
+      .preview-mobile .app-content main::-webkit-scrollbar-track { background: transparent; }
+      .preview-mobile .app-content main::-webkit-scrollbar-thumb {
+          background-color: var(--color-border);
+          border-radius: 6px;
+      }
+      
+      .mobile-preview-top-bar {
+          order: 0;
+          flex-shrink: 0;
+          padding: 0.5rem 1rem;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          border-bottom: 1px solid var(--color-border);
+          background-color: var(--color-surface);
+      }
+
+      .mobile-preview-bottom-nav {
+        order: 2;
+        position: static;
+        flex-shrink: 0;
+        border-top: 1px solid var(--color-border);
+        border-bottom: none;
+        background-color: var(--color-surface);
+        backdrop-filter: blur(10px);
+      }
+
+
+      /* === Component Overrides for Mobile Preview === */
+      .preview-mobile main { padding: 1rem; }
+      .preview-mobile h1 { font-size: 1.75rem; }
+      .preview-mobile h2 { font-size: 1.5rem; }
+      .preview-mobile .container { padding-left: 1rem; padding-right: 1rem; }
+      .preview-mobile nav { padding: 0; }
+      .preview-mobile nav .hidden.md\:flex { display: none; }
+      .preview-mobile nav .hidden.sm\:inline { display: none; }
+      .preview-mobile nav .flex.items-center.space-x-3 { gap: 0.5rem; }
+      .preview-mobile .grid.gap-4 { display: flex; flex-direction: column; }
+      .preview-mobile .md\:grid-cols-4,
+      .preview-mobile .lg\:grid-cols-7,
+      .preview-mobile .md\:grid-cols-2,
+      .preview-mobile .lg\:grid-cols-3 { grid-template-columns: 1fr; }
+      .preview-mobile .max-w-4xl, .preview-mobile .max-w-2xl, .preview-mobile .max-w-3xl { max-width: 100%; }
+      .preview-mobile .flex-wrap { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      .preview-mobile .flex.justify-between.items-center.mb-4.flex-wrap.gap-4 { align-items: flex-start; }
+
+    </style>
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://aistudiocdn.com/react@^19.1.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.1.1/",
+    "react/": "https://aistudiocdn.com/react@^19.1.1/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.16.0",
+    "firebase/app": "https://www.gstatic.com/firebasejs/10.12.3/firebase-app.js",
+    "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.3/firebase-firestore.js",
+    "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.3/firebase-auth.js",
+    "firebase/": "https://aistudiocdn.com/firebase@^12.2.1/",
+    "@firebase/auth": "https://aistudiocdn.com/@firebase/auth@^1.11.0"
+  }
+}
+</script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>
