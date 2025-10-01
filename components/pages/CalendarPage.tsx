@@ -1,3 +1,5 @@
+
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { ScheduleEvent, SmartReminder, ReminderStatus, ContextTag, SuccessState, DNDWindow, MicroHabit, EnergyTag, UndoAction } from '../../types';
@@ -334,7 +336,8 @@ const OnboardingFlow: React.FC<{
     };
 
     const updateBlock = (id: number, field: keyof Omit<TimeBlock, 'id'>, value: any) => {
-        setBlocks(currentBlocks => currentBlocks.map(b => {
+// FIX: Explicitly type 'b' to avoid potential type inference issues.
+        setBlocks(currentBlocks => currentBlocks.map((b: TimeBlock) => {
             if (b.id === id) {
                 const updatedBlock = { ...b, [field]: value };
                 if (field === 'startMin' && updatedBlock.endMin && value >= updatedBlock.endMin) {
@@ -966,21 +969,6 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
         });
     };
 
-    const handleDeleteReminder = (reminderId: string) => {
-        const reminderToDelete = smartReminders.find(r => r.id === reminderId);
-        if (!reminderToDelete) return;
-
-        const originalReminders = [...smartReminders];
-        setSmartReminders(reminders => reminders.filter(r => r.id !== reminderId));
-        
-        onUndo({
-            message: `Deleted reminder "${reminderToDelete.message}"`,
-            onUndo: () => {
-                setSmartReminders(originalReminders);
-            }
-        });
-    };
-
     const handleSaveAnchor = (data: { title: string; startTime: string; endTime: string; days: number[] }) => {
         const newEvent: ScheduleEvent = {
             id: `manual-${data.title.replace(/\s+/g, '-')}-${Date.now()}`,
@@ -1213,13 +1201,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
                                                         {formatTimeForToast(item.time)}
                                                     </p>
                                                 </div>
-                                                <button 
-                                                    onClick={() => handleDeleteReminder(reminder.id)}
-                                                    className="p-2 text-[var(--color-text-subtle)] hover:text-[var(--color-danger)] hover:bg-red-50 rounded-full"
-                                                    title="Delete Reminder"
-                                                >
-                                                    <TrashIcon className="h-5 w-5" />
-                                                </button>
+                                                {/* Optional: Add dropdown for reminder actions */}
                                             </div>
                                         );
                                     }
@@ -1288,15 +1270,8 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
                                         const reminder = item.data;
                                         return (
                                             <div key={`${reminder.id}-${dayIndex}-desktop`}
-                                                className="group relative p-3 rounded-lg bg-[var(--color-warning)]/20 border-l-4 border-[var(--color-warning)]"
+                                                className="p-3 rounded-lg bg-[var(--color-warning)]/20 border-l-4 border-[var(--color-warning)]"
                                             >
-                                                <button 
-                                                    onClick={() => handleDeleteReminder(reminder.id)}
-                                                    className="absolute top-1 right-1 p-1 rounded-full text-stone-400 hover:bg-red-100 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
-                                                    title="Delete Reminder"
-                                                >
-                                                    <TrashIcon className="h-4 w-4" />
-                                                </button>
                                                 <div className="flex justify-between items-start">
                                                     <p className="font-bold text-sm flex items-center gap-2 text-[var(--color-text-primary)]">
                                                         <BellIcon className="h-4 w-4 text-[var(--color-warning)]" />

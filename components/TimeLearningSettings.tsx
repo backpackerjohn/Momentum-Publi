@@ -1,3 +1,4 @@
+
 import React, { useMemo } from 'react';
 import { TimeLearningSettings, CompletionRecord, EnergyTag, Confirmation } from '../types';
 import { resetCompletionHistory, analyzeTimeOfDayPerformance, analyzeDayOfWeekPerformance } from '../utils/timeAnalytics';
@@ -94,7 +95,8 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
         const allRecords = Object.values(completionHistory).flat();
         if (allRecords.length < 3) return { stats: null, chartData: [] };
 
-        const totalOriginalDeviation = allRecords.reduce((sum, rec) => sum + Math.abs(rec.estimatedDurationMinutes - rec.actualDurationMinutes), 0);
+// @google/genai-api-fix: Explicitly type 'rec' to avoid it being inferred as 'unknown'.
+        const totalOriginalDeviation = allRecords.reduce((sum, rec: CompletionRecord) => sum + Math.abs(rec.estimatedDurationMinutes - rec.actualDurationMinutes), 0);
         const avgOriginalDeviation = totalOriginalDeviation / allRecords.length;
         
         const stats = {
@@ -102,7 +104,8 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
             totalRecords: allRecords.length
         };
 
-        const sortedRecords = [...allRecords].sort((a, b) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime());
+// @google/genai-api-fix: Explicitly type 'a' and 'b' to avoid them being inferred as 'unknown'.
+        const sortedRecords = [...allRecords].sort((a: CompletionRecord, b: CompletionRecord) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime());
         const BUCKET_SIZE = 5;
         if (sortedRecords.length < BUCKET_SIZE * 2) return { stats, chartData: [] };
 

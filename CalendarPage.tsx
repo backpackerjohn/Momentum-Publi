@@ -1,5 +1,6 @@
 
 
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { ScheduleEvent, SmartReminder, ReminderStatus, DNDWindow, UndoAction } from '../types';
@@ -241,7 +242,7 @@ const OnboardingWizard: React.FC<{
                             <div className="mt-4 text-left">
                                 <h4 className="font-semibold">Draft Anchors:</h4>
                                 <ul className="list-disc pl-5 text-sm text-[var(--color-text-secondary)]">
-                                    {draftAnchors.map((a, i) => <li key={i}>{a.title} ({formatDaysForToast(a.days)}, {formatTimeForDisplay(a.startMin)}-{formatTimeForDisplay(a.endMin)})</li>)}
+                                    {draftAnchors.map((a, i) => <li key={i}>{a.title} ({formatDaysForToast([a.days])}, {formatTimeForDisplay(a.startMin)}-{formatTimeForDisplay(a.endMin)})</li>)}
                                 </ul>
                             </div>
                         )}
@@ -288,7 +289,7 @@ const OnboardingWizard: React.FC<{
                      <div className="text-left">
                          <h3 className="text-xl font-bold mb-4">Step 4: Review & Create</h3>
                          <div className="p-4 border rounded-lg space-y-3 bg-[var(--color-surface-sunken)] max-h-60 overflow-y-auto">
-                             <div><h4 className="font-semibold">Anchors:</h4><ul className="list-disc pl-5 text-sm text-[var(--color-text-secondary)]">{draftAnchors.map((a,i) => <li key={i}>{a.title} ({formatDaysForToast(a.days)}, {formatTimeForDisplay(a.startMin)}-{formatTimeForDisplay(a.endMin)})</li>)}</ul></div>
+                             <div><h4 className="font-semibold">Anchors:</h4><ul className="list-disc pl-5 text-sm text-[var(--color-text-secondary)]">{draftAnchors.map((a,i) => <li key={i}>{a.title} ({formatDaysForToast([a.days])}, {formatTimeForDisplay(a.startMin)}-{formatTimeForDisplay(a.endMin)})</li>)}</ul></div>
                              <div><h4 className="font-semibold">Reminders:</h4><ul className="list-disc pl-5 text-sm text-[var(--color-text-secondary)]">{Object.entries(draftReminders).map(([title, offset]) => offset !== 999 && <li key={title}>{title}: {offset} mins</li>)}</ul></div>
                              <div><h4 className="font-semibold">Quiet Hours:</h4><p className="text-sm pl-5 text-[var(--color-text-secondary)]">{formatTimeForDisplay(draftDnd.startMin)} - {formatTimeForDisplay(draftDnd.endMin)} daily</p></div>
                          </div>
