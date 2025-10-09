@@ -1,4 +1,5 @@
 
+
 import React, { useState, useEffect, useMemo } from 'react';
 import { GoogleGenAI, Type } from "@google/genai";
 import { MomentumMapData, FinishLine, Chunk, SubStep, Note, EnergyTag, Reflection, SavedTask, CompletionRecord, TimeLearningSettings, UserDifficulty } from '../types';
@@ -1058,7 +1059,7 @@ const MomentumMap: React.FC<MomentumMapProps> = ({ activeMap, setActiveMap, setS
     const renderListView = () => (
         <div className="space-y-4">
             {chunksWithPersonalizedEstimates.map(chunk => (
-                <div key={chunk.id} data-chunkid={chunk.id} className={`bg-[var(--color-surface)] p-4 rounded-xl shadow-sm border border-[var(--color-border)] transition-all duration-300 ${chunk.isComplete ? 'opacity-60 bg-[var(--color-surface-sunken)]' : ''}`}>
+                <div key={chunk.id} data-chunkid={chunk.id} className={`bg-[var(--color-surface)] p-4 rounded-[var(--border-radius-xl)] shadow-sm border border-[var(--color-border)] transition-all duration-300 ${chunk.isComplete ? 'opacity-60 bg-[var(--color-surface-sunken)]' : ''}`}>
                     <div className="flex items-center">
                         <div className="flex-1 cursor-pointer" onClick={() => handleToggleChunk(chunk.id)}>
                             {renderChunkHeader(chunk, chunk.id === activeChunk?.id, elapsedSeconds)}
@@ -1091,7 +1092,7 @@ const MomentumMap: React.FC<MomentumMapProps> = ({ activeMap, setActiveMap, setS
     const renderCardView = () => (
          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {chunksWithPersonalizedEstimates.map(chunk => (
-                <div key={chunk.id} data-chunkid={chunk.id} className={`bg-[var(--color-surface)] p-6 rounded-2xl shadow-sm border border-[var(--color-border)] flex flex-col transition-all duration-300 ${chunk.isComplete ? 'opacity-60 bg-[var(--color-surface-sunken)]' : 'hover:shadow-lg hover:border-[var(--color-primary-accent)] hover:-translate-y-1'}`}>
+                <div key={chunk.id} data-chunkid={chunk.id} className={`bg-[var(--color-surface)] p-6 rounded-[var(--border-radius-2xl)] shadow-sm border border-[var(--color-border)] flex flex-col transition-all duration-300 ${chunk.isComplete ? 'opacity-60 bg-[var(--color-surface-sunken)]' : 'hover:shadow-lg hover:border-[var(--color-primary-accent)] hover:-translate-y-1'}`}>
                     <div className="flex items-start">
                          <div className="flex-1">{renderChunkHeader(chunk, chunk.id === activeChunk?.id, elapsedSeconds)}</div>
                         {!chunk.isComplete && (
@@ -1207,28 +1208,27 @@ const MomentumMap: React.FC<MomentumMapProps> = ({ activeMap, setActiveMap, setS
         return (
             <main className="container mx-auto p-8">
                 {error ? renderError() : (
-                    <div className="text-center py-20 bg-[var(--color-surface)] rounded-2xl shadow-lg border max-w-3xl mx-auto">
+                    <div className="text-center py-20 bg-[var(--color-surface)] rounded-[var(--border-radius-2xl)] shadow-lg border border-[var(--color-border)] max-w-3xl mx-auto">
                         <FinishLineIcon className="h-12 w-12 text-[var(--color-primary-accent)] mx-auto mb-4" />
                         <h2 className="text-3xl font-bold text-[var(--color-text-primary)]">What's Your Finish Line?</h2>
                         <p className="text-[var(--color-text-secondary)] mt-2 mb-6 max-w-lg mx-auto">Describe your high-level goal, and the AI will generate a step-by-step roadmap to get you there.</p>
-                        <div className="flex flex-col sm:flex-row justify-center items-stretch gap-2 mt-4 px-8">
+                        <form onSubmit={(e) => { e.preventDefault(); handleGenerateInitialPlan(goalInput); }} className="flex flex-col sm:flex-row justify-center items-stretch gap-2 mt-4 px-8">
                             <input
                                 type="text"
                                 value={goalInput}
                                 onChange={(e) => setGoalInput(e.target.value)}
-                                onKeyDown={(e) => { if (e.key === 'Enter') handleGenerateInitialPlan(goalInput); }}
                                 placeholder="e.g., Launch a new productivity app"
-                                className="w-full max-w-md p-4 border border-[var(--color-border-hover)] rounded-lg focus:ring-2 focus:ring-[var(--color-primary-accent)] transition-shadow text-base bg-transparent"
+                                className="w-full max-w-md p-4 border border-[var(--color-border-hover)] rounded-full focus:ring-2 focus:ring-[var(--color-primary-accent)] transition-shadow text-base bg-transparent"
                                 autoFocus
                             />
                             <button 
-                                onClick={() => handleGenerateInitialPlan(goalInput)} 
+                                type="submit"
                                 disabled={!goalInput.trim()}
-                                className="w-full sm:w-auto px-6 py-4 font-semibold text-[var(--color-primary-accent-text)] bg-[var(--color-primary-accent)] rounded-lg hover:bg-[var(--color-primary-accent-hover)] transition-all shadow-md disabled:bg-stone-400 flex items-center justify-center text-base"
+                                className="w-full sm:w-auto px-6 py-4 font-semibold text-[var(--color-primary-accent-text)] bg-[var(--color-primary-accent)] rounded-full hover:bg-[var(--color-primary-accent-hover)] transition-all shadow-md disabled:bg-stone-400 flex items-center justify-center text-base"
                             >
                                 Generate Roadmap
                             </button>
-                        </div>
+                        </form>
                     </div>
                 )}
             </main>

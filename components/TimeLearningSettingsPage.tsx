@@ -1,8 +1,8 @@
 
 
 import React, { useMemo } from 'react';
-import { TimeLearningSettings, CompletionRecord, EnergyTag, Confirmation } from '../../types';
-import { resetCompletionHistory, analyzeTimeOfDayPerformance, analyzeDayOfWeekPerformance } from '../../utils/timeAnalytics';
+import { TimeLearningSettings, CompletionRecord, EnergyTag, Confirmation } from '../types';
+import { resetCompletionHistory, analyzeTimeOfDayPerformance, analyzeDayOfWeekPerformance } from '../utils/timeAnalytics';
 
 const AccuracyChart: React.FC<{ data: { label: string; avgDeviation: number }[] }> = ({ data }) => {
     if (data.length < 2) return null;
@@ -239,7 +239,7 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
                     <h2 className="text-2xl font-bold text-[var(--color-text-primary)] mb-4">Data Management</h2>
                     <div className="flex justify-between items-center gap-4">
                         <button onClick={handleExport} className="flex-1 px-4 py-2 font-semibold text-[var(--color-text-secondary)] bg-[var(--color-surface-sunken)] hover:bg-[var(--color-border)] rounded-lg">Export My Data</button>
-                        <button onClick={handleReset} className="flex-1 px-4 py-2 font-semibold text-[var(--color-danger-text)] bg-[var(--color-danger)] hover:bg-[var(--color-danger-hover)] rounded-lg">Reset Learning Data</button>
+                        <button onClick={handleReset} className="flex-1 px-4 py-2 font-semibold text-red-700 bg-red-100 hover:bg-red-200 rounded-lg">Reset Learning Data</button>
                     </div>
                 </div>
             </div>

@@ -1,8 +1,9 @@
 
+
 import { initializeApp } from 'firebase/app';
 import { getFirestore, initializeFirestore } from 'firebase/firestore';
-// FIX: Use modular imports for Firebase auth functions, not a namespace import.
 // @google/genai-api-fix: Changed import from 'firebase/auth' to '@firebase/auth' to resolve module not found errors.
+// FIX: Use modular imports for Firebase auth functions, not a namespace import.
 import { getAuth, onAuthStateChanged, signInAnonymously } from '@firebase/auth';
 
 const firebaseConfig = {
