@@ -1,6 +1,5 @@
 
 
-
 import React, { useState, useEffect, useRef } from 'react';
 import Navbar from './components/Navbar';
 import BrainDumpModal from './components/BrainDumpModal';
@@ -566,7 +565,7 @@ const App: React.FC = () => {
       const newItems = await processWithGemini(text);
       setProcessedItems(prev => [...prev, ...newItems]);
       handleNavigate('Brain Dump');
-    } catch (e: unknown) {
+    } catch (e) {
       // FIX: Handle unknown error type in catch block
       if (e instanceof Error) {
         setError(e.message);

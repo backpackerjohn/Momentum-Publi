@@ -96,7 +96,7 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
         const allRecords = Object.values(completionHistory).flat();
         if (allRecords.length < 3) return { stats: null, chartData: [] };
 
-// @google/genai-api-fix: Explicitly type 'rec' to avoid it being inferred as 'unknown'.
+// FIX: Explicitly type 'rec' to avoid it being inferred as 'unknown'.
         const totalOriginalDeviation = allRecords.reduce((sum, rec: CompletionRecord) => sum + Math.abs(rec.estimatedDurationMinutes - rec.actualDurationMinutes), 0);
         const avgOriginalDeviation = totalOriginalDeviation / allRecords.length;
         
@@ -105,7 +105,7 @@ const TimeLearningSettingsPage: React.FC<Props> = ({ settings, setSettings, comp
             totalRecords: allRecords.length
         };
 
-// @google/genai-api-fix: Explicitly type 'a' and 'b' to avoid them being inferred as 'unknown'.
+// FIX: Explicitly type 'a' and 'b' to avoid them being inferred as 'unknown'.
         const sortedRecords = [...allRecords].sort((a: CompletionRecord, b: CompletionRecord) => new Date(a.completedAt).getTime() - new Date(b.completedAt).getTime());
         const BUCKET_SIZE = 5;
         if (sortedRecords.length < BUCKET_SIZE * 2) return { stats, chartData: [] };

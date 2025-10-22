@@ -1,5 +1,4 @@
 
-
 import React, { useEffect, useState } from 'react';
 import { ThemeName } from '../types';
 import WandIcon from './icons/WandIcon';

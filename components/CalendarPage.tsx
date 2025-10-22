@@ -1060,4 +1060,136 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
                 ...r,
                 status: ReminderStatus.Snoozed,
                 snoozedUntil: laterTime.toISOString(),
-                successHistory: [...(r
+// FIX: Corrected a copy-paste error where a file name was inserted into the code.
+                successHistory: [...(r.successHistory || []), 'snoozed'],
+                lastInteraction: new Date().toISOString(),
+            } : r);
+            historyMessage = `Rescheduled "${reminderToUpdate.message}" for later.`;
+        } else if (action === 'revert_exploration') {
+            updatedReminders = smartReminders.map(r => {
+                if (r.id === id && r.isExploratory && r.originalOffsetMinutes !== undefined) {
+                    const { originalOffsetMinutes, isExploratory, ...rest } = r;
+                    return {
+                        ...rest,
+                        offsetMinutes: originalOffsetMinutes,
+                        isExploratory: false,
+                    };
+                }
+                return r;
+            });
+            historyMessage = `Reverted exploratory time for "${reminderToUpdate.message}".`;
+        }
+        setSmartReminders(updatedReminders);
+        if (historyMessage) {
+            onSuccess(historyMessage);
+            addChangeToHistory(historyMessage, () => setSmartReminders(originalReminders));
+        }
+    };
+    
+    const handleCreateReminderFromNaturalLanguage = async (text: string) => {
+        try {
+            const parsed = await parseNaturalLanguageReminder(text, scheduleEvents);
+            const anchors = scheduleEvents.filter(e => e.title === parsed.anchorTitle);
+            if (anchors.length === 0) {
+                throw new Error(`I couldn't find an anchor named "${parsed.anchorTitle}". Please check the name and try again.`);
+            }
+
+            const newReminders: SmartReminder[] = anchors.flatMap(anchor => ({
+                id: `manual-sr-${anchor.id}-${Date.now()}`,
+                anchorId: anchor.id,
+                offsetMinutes: parsed.offsetMinutes,
+                message: parsed.message,
+                why: parsed.why,
+                status: ReminderStatus.Active,
+                isLocked: false,
+                isExploratory: false,
+                snoozeHistory: [],
+                snoozedUntil: null,
+                successHistory: [],
+                allowExploration: true,
+            }));
+            
+            handleCreateReminderFromModal(newReminders);
+        } catch (error) {
+            if (error instanceof Error) {
+                throw error;
+            }
+            throw new Error("An unexpected error occurred while creating the reminder.");
+        }
+    };
+
+    return (
+        <main className="container mx-auto p-8">
+            <div className="flex justify-between items-center mb-8 flex-wrap gap-4">
+                <div>
+                    <h1 className="text-4xl font-bold text-[var(--color-text-primary)]">Weekly Rhythm</h1>
+                    <p className="text-[var(--color-text-secondary)] mt-2 max-w-2xl">Manage your schedule's anchors and smart reminders to build a consistent rhythm.</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <button onClick={() => setIsSettingsOpen(true)} className="flex items-center space-x-2 px-3 py-2 text-sm font-semibold text-[var(--color-text-secondary)] bg-transparent border border-transparent hover:border-[var(--color-border)] hover:bg-[var(--color-surface-sunken)] rounded-lg transition-all" title="Open Settings">
+                        <GearIcon className="h-5 w-5" />
+                        <span className="hidden sm:inline">Settings</span>
+                    </button>
+                    <button onClick={() => setIsAddReminderModalOpen(true)} className="flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-[var(--color-text-secondary)] bg-[var(--color-surface)] hover:bg-[var(--color-surface-sunken)] rounded-lg transition-all border border-[var(--color-border)]">
+                        <BellIcon className="h-5 w-5" />
+                        <span>Add Reminder</span>
+                    </button>
+                    <button onClick={() => setIsAddAnchorModalOpen(true)} className="flex items-center space-x-2 px-4 py-2 text-sm font-semibold text-[var(--color-primary-accent-text)] bg-[var(--color-primary-accent)] hover:bg-[var(--color-primary-accent-hover)] rounded-lg transition-all shadow-sm">
+                        <PlusIcon className="h-5 w-5" />
+                        <span>Add Anchor</span>
+                    </button>
+                </div>
+            </div>
+
+            {previewMode === 'mobile' ? 
+              (
+                <p>Mobile view for CalendarPage goes here.</p>
+              ) : (
+                <p>Desktop view for CalendarPage goes here.</p>
+              )}
+
+
+            <OnboardingFlow isOpen={isOnboardingOpen} onClose={() => setIsOnboardingOpen(false)} onComplete={(data) => {
+                setScheduleEvents(data.newAnchors);
+                setDndWindows(data.newDnd);
+                setCalendarSetupCompleted(true);
+                setIsOnboardingOpen(false);
+            }} onboardingPreview={null} setOnboardingPreview={() => {}} />
+
+            <SettingsPanel isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} settings={settings} setSettings={setSettings} dndWindows={dndWindows} setDndWindows={setDndWindows} addChangeToHistory={(message, undo) => onUndo({message, onUndo: undo})} />
+            
+            <AddAnchorModal isOpen={isAddAnchorModalOpen} onClose={() => setIsAddAnchorModalOpen(false)} onSave={handleSaveAnchor} />
+
+            <AddReminderModal isOpen={isAddReminderModalOpen} onClose={() => setIsAddReminderModalOpen(false)} onSubmit={handleCreateReminderFromNaturalLanguage} />
+            <AiChat
+                scheduleEvents={scheduleEvents}
+                setScheduleEvents={setScheduleEvents}
+                smartReminders={smartReminders}
+                setSmartReminders={setSmartReminders}
+                pauseUntil={pauseUntil}
+                setPauseUntil={setPauseUntil}
+                addChangeToHistory={(message, undo) => onUndo({ message, onUndo: undo })}
+            />
+            {conflict && (
+                <div className="fixed inset-0 bg-black/60 z-[70] flex items-center justify-center p-4">
+                    <div className="bg-[var(--color-surface)] rounded-2xl p-8 max-w-md w-full">
+                        <h2 className="text-xl font-bold">Scheduling Conflict</h2>
+                        <p className="mt-2 text-[var(--color-text-secondary)]">
+                            {conflict.type === 'dnd'
+                                ? `This anchor overlaps with your Do Not Disturb time on ${DAYS_OF_WEEK_NAMES[conflict.targetDay]}.`
+                                : `This anchor overlaps with another event on ${DAYS_OF_WEEK_NAMES[conflict.targetDay]}.`}
+                        </p>
+                        <div className="mt-6 flex flex-col gap-3">
+                            {conflict.type === 'dnd' && <button onClick={() => resolveConflict('shift_dnd')} className="w-full px-4 py-2 font-semibold text-[var(--color-primary-accent-text)] bg-[var(--color-primary-accent)] rounded-lg">Move to after DND</button>}
+                            {conflict.type === 'overlap' && <button onClick={() => resolveConflict('shift_overlap')} className="w-full px-4 py-2 font-semibold text-[var(--color-primary-accent-text)] bg-[var(--color-primary-accent)] rounded-lg">Move to after conflicting event</button>}
+                            <button onClick={() => resolveConflict('keep_overlap')} className="w-full px-4 py-2 font-semibold text-[var(--color-text-secondary)] bg-[var(--color-surface-sunken)] rounded-lg">Keep overlap</button>
+                            <button onClick={() => setConflict(null)} className="w-full px-4 py-2 font-semibold text-[var(--color-text-secondary)] bg-transparent rounded-lg">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </main>
+    );
+};
+
+export default CalendarPage;

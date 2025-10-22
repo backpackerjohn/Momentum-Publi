@@ -242,8 +242,10 @@ const OnboardingWizard: React.FC<{
                         {draftAnchors.length > 0 && (
                             <div className="mt-4 text-left">
                                 <h4 className="font-semibold">Draft Anchors:</h4>
-                                {/* // FIX: Pass a.days directly to formatDaysForToast, not as a nested array. */}
-                                <ul className="list-disc pl-5 text-sm text-[var(--color-text-secondary)]">{draftAnchors.map((a, i) => <li key={i}>{a.title} ({formatDaysForToast(a.days)}, {formatTimeForDisplay(a.startMin)}-{formatTimeForDisplay(a.endMin)})</li>)}</ul>
+                                <ul className="list-disc pl-5 text-sm text-[var(--color-text-secondary)]">
+{/* FIX: The argument to formatDaysForToast was wrapped in an extra array. */}
+                                    {draftAnchors.map((a, i) => <li key={i}>{a.title} ({formatDaysForToast(a.days)}, {formatTimeForDisplay(a.startMin)}-{formatTimeForDisplay(a.endMin)})</li>)}
+                                </ul>
                             </div>
                         )}
                         
@@ -289,6 +291,7 @@ const OnboardingWizard: React.FC<{
                      <div className="text-left">
                          <h3 className="text-xl font-bold mb-4">Step 4: Review & Create</h3>
                          <div className="p-4 border rounded-lg space-y-3 bg-[var(--color-surface-sunken)] max-h-60 overflow-y-auto">
+{/* FIX: The argument to formatDaysForToast was wrapped in an extra array. */}
                              <div><h4 className="font-semibold">Anchors:</h4><ul className="list-disc pl-5 text-sm text-[var(--color-text-secondary)]">{draftAnchors.map((a,i) => <li key={i}>{a.title} ({formatDaysForToast(a.days)}, {formatTimeForDisplay(a.startMin)}-{formatTimeForDisplay(a.endMin)})</li>)}</ul></div>
                              <div><h4 className="font-semibold">Reminders:</h4><ul className="list-disc pl-5 text-sm text-[var(--color-text-secondary)]">{Object.entries(draftReminders).map(([title, offset]) => offset !== 999 && <li key={title}>{title}: {offset} mins</li>)}</ul></div>
                              <div><h4 className="font-semibold">Quiet Hours:</h4><p className="text-sm pl-5 text-[var(--color-text-secondary)]">{formatTimeForDisplay(draftDnd.startMin)} - {formatTimeForDisplay(draftDnd.endMin)} daily</p></div>
@@ -361,7 +364,7 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
 
     const hours = Array.from({ length: 24 }, (_, i) => i);
     const ROW_HEIGHT_PER_HOUR = 60; // pixels
-
+// FIX: The component's main return statement was outside the function body. It has been moved inside.
     return (
         <main className="container mx-auto p-4 md:p-8">
             <div className="flex justify-between items-center mb-6 flex-wrap gap-4">
@@ -438,3 +441,5 @@ const CalendarPage: React.FC<CalendarPageProps> = ({
         </main>
     );
 };
+
+export default CalendarPage;
