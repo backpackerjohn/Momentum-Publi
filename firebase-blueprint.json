@@ -1,0 +1,35 @@
+{
+  "entities": {
+    "AppData": {
+      "title": "Application Data",
+      "description": "Generic container for application state slices saved as JSON blobs.",
+      "type": "object",
+      "properties": {
+        "data": {
+          "type": "object",
+          "description": "The actual JSON data for this state slice."
+        }
+      },
+      "required": ["data"]
+    },
+    "User": {
+      "title": "User Profile",
+      "description": "Information about the user.",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}/appData/{docId}": {
+      "schema": "AppData",
+      "description": "Various application state components (brain dump, tasks, settings, etc.) linked to a user."
+    },
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Root user document."
+    }
+  }
+}
